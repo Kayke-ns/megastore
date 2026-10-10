@@ -1,0 +1,21 @@
+[package]
+name = "megastore"
+version = "1.0.0"
+edition = "2021"
+description = "ConectaStore: sistema de recomendação de produtos baseado em grafos"
+license = "MIT"
+
+[lib]
+name = "megastore"
+path = "src/lib.rs"
+
+[[bin]]
+name = "megastore"
+path = "src/main.rs"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

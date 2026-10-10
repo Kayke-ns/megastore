@@ -1,0 +1,62 @@
+   Compiling megastore v1.0.0 (/home/claude/megastore)
+    Finished `release` profile [optimized] target(s) in 19.13s
+     Running unittests src/lib.rs (target/release/deps/megastore-9cfa7c1a08efdf95)
+
+running 22 tests
+test catalog::tests::busca_por_nome_ignora_maiusculas ... ok
+test catalog::tests::atualiza_preco ... ok
+test catalog::tests::cadastra_e_consulta_por_id ... ok
+test catalog::tests::indice_por_categoria ... ok
+test catalog::tests::rejeita_id_duplicado ... ok
+test datagen::tests::rng_e_reprodutivel ... ok
+test datagen::tests::gera_volume_pedido ... ok
+test graph::tests::add_node_e_idempotente ... ok
+test graph::tests::bfs_encontra_menor_caminho ... ok
+test graph::tests::contagem_por_tipo_e_memoria ... ok
+test graph::tests::dfs_conta_alcance_por_profundidade ... ok
+test graph::tests::remove_aresta_mantem_invariantes ... ok
+test graph::tests::tipos_diferentes_geram_arestas_distintas ... ok
+test graph::tests::upsert_nao_duplica_arestas ... ok
+test models::tests::formata_precos_em_reais ... ok
+test models::tests::produto_expoe_preco_formatado ... ok
+test recommender::tests::colaborativa_ranqueia_mais_coocorrente_primeiro ... ok
+test recommender::tests::fanout_seleciona_arestas_mais_fortes ... ok
+test recommender::tests::melhor_caminho_explica_recomendacao ... ok
+test recommender::tests::profundidade_limita_alcance ... ok
+test recommender::tests::top_k_ordena_e_desempata_por_id ... ok
+test graph::tests::remocoes_aleatorias_preservam_ponteiros_rev ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/release/deps/megastore-3afc3a6048c52923)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration.rs (target/release/deps/integration-2e271d08dec87da1)
+
+running 14 tests
+test compra_repetida_reforca_aresta_sem_duplicar ... ok
+test cold_start_usa_interesse_e_mais_vendidos ... ok
+test consultas_de_produto ... ok
+test devolucao_remove_conexao_e_libera_recomendacao ... ok
+test erros_de_cadastro_e_referencias_invalidas ... ok
+test estatisticas_e_tipos_de_aresta ... ok
+test explicacao_comeca_no_cliente_e_termina_no_produto ... ok
+test fluxo_completo_cadastro_compra_recomendacao ... ok
+test interesse_muda_o_ranking ... ok
+test pontuacoes_em_ordem_decrescente ... ok
+test recomendacao_por_produto ... ok
+test recomendacoes_nao_tem_duplicatas_nem_itens_comprados ... ok
+test resultado_e_deterministico ... ok
+test volume_sintetico_mantem_garantias ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+   Doc-tests megastore
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

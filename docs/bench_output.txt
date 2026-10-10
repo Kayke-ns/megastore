@@ -1,0 +1,41 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   ConectaStore  ·  Sistema de Recomendação de Produtos Baseado em Grafos     ║
+║   MegaStore  ·  Data Structure Strategy and Implementation  ·  Rust          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+▶ Testes de desempenho  ·  500 recomendações por cenário
+──────────────────────────────────────────────────────────────────────────────
+  [XS] gerando 1000 produtos, 500 clientes, 20 categorias... ok (0.00 s)
+  [S] gerando 10000 produtos, 5000 clientes, 50 categorias... ok (0.02 s)
+  [M] gerando 100000 produtos, 50000 clientes, 200 categorias... ok (0.44 s)
+  [L] gerando 500000 produtos, 250000 clientes, 500 categorias... ok (3.46 s)
+  [XL] gerando 1000000 produtos, 500000 clientes, 1000 categorias... ok (7.28 s)
+
+▶ Resultados
+──────────────────────────────────────────────────────────────────────────────
+         vértices     arestas   constr.  busca id   rec. méd   rec. p95  rel. prod    memória
+  XS         1520        7196     0.00s      18ns    166.4µs    225.8µs    125.8µs   388.7 KB
+  S         15050       75212     0.02s      19ns    529.9µs    769.0µs    428.8µs     4.1 MB
+  M        150200      756944     0.44s      63ns    829.0µs   1186.5µs    600.0µs    39.7 MB
+  L        750500     3802134     3.46s     118ns   1343.7µs   2084.8µs   1033.8µs   195.6 MB
+  XL      1501000     7603874     7.28s     138ns   1557.9µs   2390.5µs   1014.2µs   390.8 MB
+
+▶ Lista de adjacência  vs  matriz de adjacência (f32, V²)
+──────────────────────────────────────────────────────────────────────────────
+              lista           matriz          razão
+  XS       388.7 KB           8.8 MB            23x
+  S          4.1 MB         864.0 MB           212x
+  M         39.7 MB          84.0 GB          2168x
+  L        195.6 MB           2.0 TB         10987x
+  XL       390.8 MB           8.2 TB         21991x
+
+▶ Efeito do corte de fan-out  ·  cenário M (100000 produtos)
+──────────────────────────────────────────────────────────────────────────────
+     fan-out     rec. média   top-5 igual ao exato
+          16        231.9µs                  91.9%
+          64        440.9µs                  98.2%
+         256        894.1µs                  99.2%
+        1024       2831.9µs                 100.0%
+   ilimitado       2908.8µs                 100.0%
+
+  CSV salvo em docs/benchmark.csv

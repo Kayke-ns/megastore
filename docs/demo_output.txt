@@ -1,0 +1,124 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   ConectaStore  ·  Sistema de Recomendação de Produtos Baseado em Grafos     ║
+║   MegaStore  ·  Data Structure Strategy and Implementation  ·  Rust          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+▶ 1. Catálogo de produtos  ·  HashMap<ProductId, Product>
+──────────────────────────────────────────────────────────────────────────────
+  ID    Produto                            Categoria                   Preço  Vendas
+  101   Notebook Gamer X15                 Eletrônicos           R$ 6.499,00       3
+  102   Mouse Sem Fio Pro                  Eletrônicos             R$ 199,90       2
+  103   Teclado Mecânico RGB               Eletrônicos             R$ 349,90       2
+  104   Headset Bluetooth                  Eletrônicos             R$ 299,00       2
+  105   Monitor 27" 4K                     Eletrônicos           R$ 2.199,00       2
+  106   Smartphone Z10                     Eletrônicos           R$ 3.999,00       1
+  201   Livro: Rust na Prática             Livros                  R$ 119,90       3
+  202   Livro: Algoritmos e Estruturas     Livros                  R$ 149,90       2
+  203   Livro: Código Limpo                Livros                   R$ 99,90       1
+  204   Livro: Ficção Científica Vol. 1    Livros                   R$ 59,90       0
+  301   Camiseta Dev                       Vestuário                R$ 59,90       1
+  302   Moletom Canguru                    Vestuário               R$ 149,90       2
+  303   Tênis de Corrida                   Vestuário               R$ 399,90       1
+  401   Luminária de Mesa LED              Casa e Decoração        R$ 129,90       1
+  402   Quadro Decorativo                  Casa e Decoração         R$ 89,90       1
+  501   Café Especial 1kg                  Alimentos                R$ 79,90       5
+  502   Chá Verde Orgânico                 Alimentos                R$ 29,90       1
+  601   Cadeira Ergonômica                 Móveis                R$ 1.499,00       2
+  602   Mesa Regulável                     Móveis                R$ 1.899,00       1
+  603   Estante de Livros                  Móveis                  R$ 499,00       1
+
+▶ 2. Grafo de relacionamentos  ·  lista de adjacência ponderada
+──────────────────────────────────────────────────────────────────────────────
+  Vértices: 34  (20 produtos, 8 clientes, 6 categorias)
+  Arestas:  65
+    · compra      32
+    · avaliação    6
+    · interesse    3
+    · categoria   20
+    · similar      4
+  Memória:  lista de adjacência ≈ 5.9 KB  |  matriz densa seria 4.5 KB
+  Construído em 63 µs
+
+▶ 3. Consultas
+──────────────────────────────────────────────────────────────────────────────
+  produto(105)        → Monitor 27" 4K · Eletrônicos · R$ 2.199,00  (95 ns)
+  buscar("livro")     → 5 resultados
+  ID    Produto                            Categoria                   Preço  Vendas
+  201   Livro: Rust na Prática             Livros                  R$ 119,90       3
+  202   Livro: Algoritmos e Estruturas     Livros                  R$ 149,90       2
+  203   Livro: Código Limpo                Livros                   R$ 99,90       1
+  204   Livro: Ficção Científica Vol. 1    Livros                   R$ 59,90       0
+  603   Estante de Livros                  Móveis                  R$ 499,00       1
+  categoria(Móveis)   → Cadeira Ergonômica, Mesa Regulável, Estante de Livros
+
+▶ 4. Recomendações para a cliente Ana (id 1)
+──────────────────────────────────────────────────────────────────────────────
+  Já comprou: Notebook Gamer X15, Mouse Sem Fio Pro, Livro: Rust na Prática, Café Especial 1kg
+  #   ID    Produto                            Categoria             Score  Origem
+  1   105   Monitor 27" 4K                     Eletrônicos          0.0549  grafo
+  2   202   Livro: Algoritmos e Estruturas     Livros               0.0537  grafo
+  3   103   Teclado Mecânico RGB               Eletrônicos          0.0486  grafo
+  4   601   Cadeira Ergonômica                 Móveis               0.0194  grafo
+  5   401   Luminária de Mesa LED              Casa e Decoração     0.0136  grafo
+  BFS de 3 níveis · fan-out 256 · calculado em 29.1 µs
+
+▶ 5. Por que recomendamos isso?  ·  DFS com poda (melhor caminho)
+──────────────────────────────────────────────────────────────────────────────
+  [cliente] Ana
+     └─(compra)─▶ [produto] Notebook Gamer X15
+     └─(similar)─▶ [produto] Monitor 27" 4K
+  força do caminho: 0.0200
+
+  [cliente] Ana
+     └─(compra)─▶ [produto] Livro: Rust na Prática
+     └─(similar)─▶ [produto] Livro: Algoritmos e Estruturas
+  força do caminho: 0.0247
+
+
+▶ 6. Quem comprou "Notebook Gamer X15" (101) também se interessa por
+──────────────────────────────────────────────────────────────────────────────
+  #   ID    Produto                            Categoria             Score  Origem
+  1   105   Monitor 27" 4K                     Eletrônicos          0.1983  grafo
+  2   601   Cadeira Ergonômica                 Móveis               0.0949  grafo
+  3   102   Mouse Sem Fio Pro                  Eletrônicos          0.0909  grafo
+  4   103   Teclado Mecânico RGB               Eletrônicos          0.0636  grafo
+  5   602   Mesa Regulável                     Móveis               0.0353  grafo
+
+▶ 7. Cold start: cliente Hugo (id 8), sem compras, interesse em Móveis
+──────────────────────────────────────────────────────────────────────────────
+  #   ID    Produto                            Categoria             Score  Origem
+  1   601   Cadeira Ergonômica                 Móveis               0.0694  grafo
+  2   602   Mesa Regulável                     Móveis               0.0597  grafo
+  3   603   Estante de Livros                  Móveis               0.0533  grafo
+  4   501   Café Especial 1kg                  Alimentos            0.0000  mais vendidos
+  5   101   Notebook Gamer X15                 Eletrônicos          0.0000  mais vendidos
+
+  Visitante novo, sem nenhuma conexão (só mais vendidos):
+  #   ID    Produto                            Categoria             Score  Origem
+  1   501   Café Especial 1kg                  Alimentos            0.0000  mais vendidos
+  2   101   Notebook Gamer X15                 Eletrônicos          0.0000  mais vendidos
+  3   201   Livro: Rust na Prática             Livros               0.0000  mais vendidos
+  4   102   Mouse Sem Fio Pro                  Eletrônicos          0.0000  mais vendidos
+  5   103   Teclado Mecânico RGB               Eletrônicos          0.0000  mais vendidos
+
+▶ 8. Prevenção de duplicatas
+──────────────────────────────────────────────────────────────────────────────
+  Ana comprou o Notebook mais 2 vezes → arestas: 65 → 65 (peso acumulado, sem aresta nova)
+  Top-15 para Ana: 15 itens, 15 distintos, 0 já comprados
+  Cadastro repetido rejeitado: cliente 1 já cadastrado
+
+▶ 9. Gerenciamento de conexões
+──────────────────────────────────────────────────────────────────────────────
+  Ana devolveu o "Café Especial 1kg" (aresta de compra removida)
+  Interesse de Ana em Eletrônicos atualizado para 1.0
+  #   ID    Produto                            Categoria             Score  Origem
+  1   105   Monitor 27" 4K                     Eletrônicos          0.0657  grafo
+  2   103   Teclado Mecânico RGB               Eletrônicos          0.0435  grafo
+  3   601   Cadeira Ergonômica                 Móveis               0.0270  grafo
+  4   202   Livro: Algoritmos e Estruturas     Livros               0.0259  grafo
+  5   104   Headset Bluetooth                  Eletrônicos          0.0108  grafo
+  DFS: vértices alcançáveis a partir de Ana → 1 salto: 6 · 2 saltos: 17 · 3 saltos: 23
+  Grafo consistente após as alterações: true
+
+──────────────────────────────────────────────────────────────────────────────
+Demonstração concluída. Rode `cargo run --release -- bench` para os testes de volume.
